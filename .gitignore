@@ -1,0 +1,51 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local data and logs
+*.log
+*.sqlite
+*.sqlite3
+/storage/
+/docker-data/
+/backups/
+/exports/
+
+# PHP / Laravel
+/apps/api/vendor/
+/apps/api/bootstrap/cache/*.php
+/apps/api/storage/framework/cache/data/*
+/apps/api/storage/framework/sessions/*
+/apps/api/storage/framework/views/*
+/apps/api/storage/logs/*
+
+# Node / Next.js
+/apps/web/node_modules/
+/apps/web/.next/
+/apps/web/out/
+/apps/web/coverage/
+/apps/web/npm-debug.log*
+
+# Flutter / Dart
+/apps/mobile/.dart_tool/
+/apps/mobile/.flutter-plugins
+/apps/mobile/.flutter-plugins-dependencies
+/apps/mobile/build/
+/apps/mobile/coverage/
+/apps/mobile/android/.gradle/
+/apps/mobile/ios/Pods/
+
+# IDE and OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.DS_Store
+Thumbs.db
+desktop.ini
