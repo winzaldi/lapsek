@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "LAOS — Laporan Online Sekolah",
   description:
-    "Fondasi aplikasi Laporan Online Sekolah untuk data kesehatan UKS.",
+    "Ruang kerja pemeriksaan kesehatan UKS untuk Puskesmas dan sekolah.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

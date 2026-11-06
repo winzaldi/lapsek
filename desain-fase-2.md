@@ -9,8 +9,8 @@
 ### Status penerapan (3 November 2026)
 
 - Monorepo lokal sudah diinisialisasi pada branch `main`; aplikasi Laravel, Next.js, dan Flutter beserta quality gates dasar telah dibuat.
-- PostgreSQL Docker Compose dan workflow GitHub Actions tersedia. Docker daemon tidak berjalan saat verifikasi, sehingga container PostgreSQL belum dijalankan.
-- API memakai SQLite untuk tes dan dapat dijalankan lokal; koneksi PHP `pdo_pgsql` belum aktif pada toolchain lokal ini.
+- Konfigurasi MySQL 8.4 Docker Compose dan workflow GitHub Actions tersedia. Docker daemon tidak berjalan saat verifikasi, sehingga container MySQL belum dijalankan.
+- API memakai SQLite in-memory untuk tes CI; `pdo_mysql` tersedia pada toolchain PHP lokal.
 - Hosted staging dan workflow deploy belum dibuat karena provider/region serta repository remote belum ditentukan.
 - Validasi lokal: tes Laravel/Pint, lint/typecheck/build Next.js, Flutter analyze/test/build APK, dependency audit, dan validasi sintaks Compose.
 

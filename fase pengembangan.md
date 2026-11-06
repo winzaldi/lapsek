@@ -22,6 +22,8 @@ Dokumen ini menerjemahkan [PRD Laporan Online Sekolah](./PRD-Laporan-Online-Seko
 | 8 | Uji menyeluruh dan pilot | UAT, keamanan, performa, pemulihan, pilot terkontrol | Go-live disetujui berdasarkan kriteria rilis |
 | 9 | Peluncuran dan operasi | Rollout, dukungan, monitoring, backup, dan perbaikan | Layanan stabil dan proses operasional berjalan |
 
+**Status implementasi (5 November 2026):** Backend Fase 4 mencakup draf/finalisasi/publikasi/koreksi pemeriksaan, histori dan revisi, seluruh indikator dari dokumen sumber dengan status eksplisit, kalkulasi IMT dasar, audit akses sensitif, serta isolasi scope. Implementasi web Fase 5 mencakup sesi login aman dan workspace Admin Sistem, Operator Puskesmas, Operator Sekolah/Guru, serta Siswa. Operator Sekolah dapat melihat profil sekolah, mengelola profil siswa/kelas/enrollment, dan membaca hasil terpublikasi; Siswa dapat melihat histori pemeriksaan yang tertaut ke akun dan telah dipublikasikan. Kontrak API Fase 4 ada di [Kontrak API Fase 4](./docs/api-fase-4.md); panduan web di [Panduan Operasional Web Fase 5](./docs/panduan-web-fase-5.md). Laporan unduh/ekspor dan rekap agregat tetap berada di Fase 6. Algoritma status gizi anak, ambang klinis, aturan persetujuan koreksi, pengeditan rinci master sekolah oleh operator, reset kata sandi oleh Admin, paginasi, dan UAT dengan pengguna tetap belum selesai.
+
 ## Fase 0 — Inisiasi dan validasi kebutuhan
 
 ### Langkah
@@ -86,6 +88,8 @@ Dokumen ini menerjemahkan [PRD Laporan Online Sekolah](./PRD-Laporan-Online-Seko
 - Tidak ada secret atau data kesehatan nyata pada lingkungan development/test.
 
 ## Fase 3 — Backend inti dan master data
+
+**Status implementasi (19 Juni 2026):** Backend Laravel untuk autentikasi, role/scope, master data, enrollment, tautan akun siswa, impor CSV ber-preview, dan audit telah diimplementasikan. Kontrak dan batasan endpoint ada di [Kontrak API Fase 3](./docs/api-fase-3.md). Integrasi UI Next.js/Flutter serta fitur pemeriksaan tidak termasuk hasil fase ini.
 
 ### Langkah
 1. Implementasikan login/logout, pengelolaan sesi/token, reset kredensial, status akun, dan throttling.
@@ -154,6 +158,30 @@ Dokumen ini menerjemahkan [PRD Laporan Online Sekolah](./PRD-Laporan-Online-Seko
 
 ## Fase 6 — Rapor, rekap, grafik, dan ekspor
 
+**Status implementasi (6 November 2026):** Web menyediakan histori/rapor individu terpublikasi, rekap sasaran dan pemeriksaan sesuai akses per semester/tahun ajaran, grafik cakupan sekolah/kelas, filter jenjang/sekolah/kelas, serta cetak laporan. Ekspor CSV/XLSX (maksimal 5.000 pemeriksaan) dan PDF (maksimal 100) dibuat melalui antrean, diformula-sanitasi, disimpan privat selama tujuh hari, memiliki riwayat bersama dalam cakupan institusi, pemeriksaan ulang otorisasi saat unduh, dan audit permintaan/selesai/unduhan. Grup grafik dengan sasaran kurang dari 5 disembunyikan. Fase 6 masih memerlukan UAT, persetujuan ambang privasi dan retensi, serta verifikasi operasional worker/scheduler sebelum dinyatakan lengkap. Lihat [Kontrak API Fase 6](./docs/api-fase-6.md).
+
+## Fase 7 — Aplikasi mobile siswa
+
+**Status implementasi (6 November 2026):** Flutter menyediakan login untuk akun Siswa, token Sanctum dalam penyimpanan aman Android/iOS, pemeriksaan sesi dan akun tertaut terverifikasi, rapor hanya untuk siswa tertaut dan berstatus terpublikasi, filter tahun ajaran/semester, paginasi histori, detail indikator, refresh, reset kata sandi, logout, serta penanganan jaringan/sesi kedaluwarsa. API `/auth/me` hanya mengembalikan `student_id` dari tautan terverifikasi; endpoint histori menyediakan periode yang tersedia dan filter tahun/semester. Panduan run/test ada di [Panduan Mobile Fase 7](./docs/panduan-mobile-fase-7.md). Uji otomatis tidak menggantikan UAT perangkat, verifikasi akses lintas siswa, atau pengujian versi OS yang disetujui. Distribusi/signing iOS memerlukan macOS/Xcode.
+
+### Langkah
+1. Sediakan API HTTPS dan akun siswa dengan tautan profil yang telah diverifikasi.
+2. Jalankan analisis/test Flutter serta uji APK Android debug mengikuti panduan Fase 7.
+3. Uji sesi expired, akun nonaktif, reset kata sandi, tidak ada tautan, pagination, jaringan gagal, dan akses lintas siswa.
+4. Lakukan UAT perangkat Android/iOS dan review aksesibilitas dengan data sintetis.
+5. Siapkan signing key/provisioning dan paket internal setelah kebijakan privasi serta perangkat target disetujui.
+
+### Deliverable
+- Flutter MVP rapor dan histori siswa.
+- API session/link terverifikasi dan filter histori.
+- Panduan build, konfigurasi endpoint, pengujian, dan batas distribusi.
+
+### Kriteria keluar
+- Akun yang belum tertaut/terverifikasi tidak dapat melihat histori; siswa tidak dapat mengganti ID untuk melihat siswa lain.
+- Hanya hasil publikasi yang terlihat, termasuk setelah filter dan pagination.
+- Token tersimpan aman; logout dan token kedaluwarsa menghapus sesi lokal; rapor tidak tersimpan sebagai cache.
+- APK debug dan automated tests lulus; paket release hanya ditandatangani dengan kunci organisasi.
+
 ### Langkah
 1. Implementasikan rapor individu dengan histori per semester/tahun ajaran dan status pemeriksaan yang jelas.
 2. Implementasikan rekap sekolah/Puskesmas: sasaran, diperiksa, belum diperiksa, dan cakupan.
@@ -195,6 +223,8 @@ Dokumen ini menerjemahkan [PRD Laporan Online Sekolah](./PRD-Laporan-Online-Seko
 
 ## Fase 8 — Uji menyeluruh dan pilot terbatas
 
+**Status implementasi (6 November 2026):** Regression suite backend mencakup scope role, data siswa/pemeriksaan, pemeriksaan duplikat, finalisasi, koreksi/versioning, histori yang hanya terpublikasi, filter periode, laporan dengan suppression, formula sanitization, private export, akses/retensi arsip, dan throttling login. CI menjalankan API tests, web lint/typecheck/build/dependency audit, Flutter analyze/tests/build debug, Composer audit, dan secret scan. Runbook QA/UAT/pilot serta kriteria go/no-go tersedia di [Runbook QA dan Pilot Fase 8](./docs/qa-pilot-fase-8.md). Pengujian performa terhadap target yang disepakati, backup-restore pada infrastruktur yang disetujui, UAT/pilot, pelatihan, dan persetujuan go/no-go **belum dilakukan**; fase ini belum dapat dinyatakan selesai sebelum langkah tersebut ditandatangani pemilik proses.
+
 ### Langkah
 1. Jalankan pengujian unit, integrasi, API contract, end-to-end, regresi, dan aksesibilitas.
 2. Jalankan uji keamanan: IDOR, privilege escalation, brute force, input validation, ekspor, file access, dan log leakage.
@@ -216,6 +246,8 @@ Dokumen ini menerjemahkan [PRD Laporan Online Sekolah](./PRD-Laporan-Online-Seko
 - Prosedur dukungan, insiden, backup/restore, serta rollback telah diuji atau disimulasikan.
 
 ## Fase 9 — Peluncuran, operasi, dan iterasi
+
+**Status implementasi (6 November 2026):** Perintah `php artisan laos:check-production-readiness` memeriksa konfigurasi aman, HTTPS, MySQL/MariaDB, queue/cache/session persisten, transport email, secure cookie, penyimpanan ekspor non-public, konektivitas database, dan status migrasi tanpa mengubah data. Regression test kini membuktikan offboarding menonaktifkan akun, mencabut seluruh token API, dan mencatat audit. CI memvalidasi web pada Node.js 22 dan 24 untuk menyiapkan evaluasi kompatibilitas WHM cPanel. Runbook [Operasi Produksi Fase 9](./docs/operasi-produksi-fase-9.md) mencakup gerbang rilis, profil cPanel, konfigurasi, rollout dan impor, bootstrap Admin Sistem, worker/scheduler, monitoring, onboarding/offboarding, backup/restore, insiden, rollback, dan evaluasi metrik. Akun/versi server, domain, region, SLA, kebijakan pemrosesan/retensi, RPO/RTO, backup provider, alert aktif, pelatihan, support desk, dan pilot **belum disediakan atau dijalankan**; fase ini belum siap go-live sampai kompatibilitas server dan persetujuan/bukti operasional tersedia.
 
 ### Langkah
 1. Persiapkan data referensi produksi dan migrasi/import awal melalui validasi serta persetujuan pemilik data.

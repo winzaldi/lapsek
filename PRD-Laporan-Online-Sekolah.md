@@ -405,3 +405,4 @@ Data kesehatan siswa adalah data pribadi sensitif dan subjeknya banyak anak. Imp
 4. **Mobile siswa:** autentikasi, rapor individu, dan histori; mobile petugas dapat ditambahkan setelah alur web stabil.
 5. **Pilot terbatas:** satu wilayah Puskesmas dan beberapa sekolah dengan data uji/terkontrol, uji keamanan serta validasi pengguna.
 6. **Rollout bertahap:** migrasi data yang tervalidasi, pelatihan, monitoring, dukungan, dan evaluasi metrik.
+7. **Operasi berkelanjutan:** tetapkan pemilik sistem/data, hosting dan wilayah data, SLA, RPO/RTO, retensi, backup/restore, support desk, incident response, review akses operator, patching, serta proses go/no-go sebelum membuka produksi. Nilai target dan jadwal wajib disetujui pemangku kepentingan; PRD belum menetapkannya.
