@@ -1,6 +1,6 @@
 # Runbook Operasi Produksi Fase 9
 
-Runbook ini menyiapkan deployment yang mengikuti target awal WHM cPanel. **Akun/server dan versinya, domain/subdomain, region, SLA, RPO/RTO, backup provider, dan support desk belum ditetapkan.** Jangan mengarahkan data nyata ke aplikasi sampai pemilik proses/data dan penanggung jawab operasi menyetujui keputusan tersebut.
+Runbook ini menyiapkan deployment yang mengikuti target awal WHM cPanel. Pengguna mengonfirmasi **cPanel 138.0.19, PHP 8.4, MySQL 8.\***, dan **Node.js 22**. Dukungan worker queue pada hosting, domain/subdomain, region, SLA, RPO/RTO, backup provider, dan support desk belum dikonfirmasi. Jangan mengarahkan data nyata ke aplikasi sampai pemilik proses/data dan penanggung jawab operasi menyetujui keputusan tersebut.
 
 ## 1. Pemilik, persetujuan, dan gerbang rilis
 
@@ -76,14 +76,15 @@ Build Next.js dengan `LAOS_API_BASE_URL` server-side menunjuk API HTTPS yang dis
 
 ### Profil WHM cPanel (provisional)
 
-WHM/cPanel adalah jenis platform yang dipilih, tetapi fitur bergantung pada versi/tema, paket provider, OS, dan hak akun. Verifikasi setiap butir berikut kepada penyedia atau administrator WHM sebelum membeli/menyiapkan data:
+WHM/cPanel 138.0.19, PHP 8.4, dan MySQL 8.* sudah dikonfirmasi pengguna; fitur tetap bergantung pada tema, paket provider, OS, dan hak akun. Verifikasi setiap butir berikut pada account/provider sebelum deployment:
 
-- PHP CLI/web **8.4**, Composer 2/SSH Terminal, ekstensi `pdo_mysql`, dan MySQL/MariaDB versi yang kompatibel tersedia.
+- Versi PHP CLI dan web sama-sama **8.4**, Composer 2/SSH Terminal, ekstensi `pdo_mysql`, serta koneksi MySQL 8.* yang dipakai aplikasi telah diuji.
+- Fitur **Web Apps/Websites & Apps** tersedia untuk akun cPanel 138.0.19. Dokumentasi Meridian menunjukkan pemilihan versi Node, build output directory, environment variables, build command, serta startup command; konfirmasi semuanya tersedia dan dapat diatur oleh paket hosting.
 - Domain API dapat memakai document root tepat ke `apps/api/public` atau release `public`; **jangan** arahkan webroot ke root project Laravel, `.env`, `vendor`, atau `storage`.
 - HTTPS/TLS, reverse proxy, secret environment, folder aplikasi/storage privat di luar document root, cron, backup serta pemulihan database/file tersedia dan dapat diuji.
-- Next.js 16 membutuhkan Node `>=20.9.0` menurut lockfile. CI kini menguji Node 22 dan 24; halaman dokumentasi cPanel EasyApache yang tersedia mencantumkan Node 16/18/20/22 pada paket tertentu. Pastikan akun/fitur Web Apps atau Application Manager benar-benar menyediakan versi yang telah diuji. Jika hanya menyediakan Node versi lebih lama, **no-go** sampai runtime dan CI diubah serta diuji.
+- Node.js **22** telah dikonfirmasi tersedia. Next.js 16 membutuhkan Node `>=20.9.0` menurut lockfile; CI dikonfigurasi untuk menjalankan lint/typecheck/audit/build pada Node 22 dan 24, tetapi job Node 22 harus lulus di GitHub Actions sebelum rilis.
 - Pastikan Passenger/Node app dapat menjalankan Next.js long-lived server, mengatur `PORT`/environment, restart aplikasi, dan menyajikan HTTPS. Jangan mengunggah isi repository ke `public_html` sebagai aplikasi statis.
-- Worker queue harus berjalan persisten di bawah process manager yang diizinkan, atau provider harus mendukung cron terjadwal dengan `flock`/lock sejenis agar worker tidak bertumpuk. Jika tidak ada pilihan ini, ekspor asynchronous belum siap untuk pilot.
+- Konfirmasi apakah host menyediakan process manager yang diizinkan untuk worker queue, atau cron dan `flock`/lock sejenis. Dukungan worker belum diketahui; jika tidak ada pilihan ini, ekspor asynchronous belum siap untuk pilot.
 
 Pola direktori yang disarankan (ubah mengikuti host dan pastikan `public` adalah satu-satunya webroot Laravel):
 
@@ -113,7 +114,7 @@ Scheduler Laravel dapat dipanggil melalui cron tiap menit dari path aplikasi:
 
 Atur notifikasi kegagalan ke kanal operasi yang aman; jangan membuang error ke `/dev/null` tanpa monitoring, dan jangan menyimpan output berisi data pribadi pada lokasi publik. Periksa `schedule:list` setelah deploy.
 
-Panduan resmi cPanel: [Deploy a Website with Node.js](https://docs.cpanel.net/cpanel/meridian/websites/deploy-a-website-with-nodejs/), [Application Manager](https://docs.cpanel.net/cpanel/software/application-manager/), [Passenger Applications](https://docs.cpanel.net/knowledge-base/web-services/using-passenger-applications/), dan [Cron Jobs](https://docs.cpanel.net/cpanel/advanced/cron-jobs/). Fitur dan versi runtime harus dikonfirmasi ke host; dokumentasi tersebut bukan jaminan bahwa paket akun LAOS menyediakannya.
+Panduan resmi cPanel: [Deploy a Website with Node.js](https://docs.cpanel.net/cpanel/meridian/websites/deploy-a-website-with-nodejs/), [Manage a Node.js App](https://docs.cpanel.net/cpanel/meridian/websites/manage-a-nodejs-app/), [Application Manager](https://docs.cpanel.net/cpanel/software/application-manager/), [Passenger Applications](https://docs.cpanel.net/knowledge-base/web-services/using-passenger-applications/), dan [Cron Jobs](https://docs.cpanel.net/cpanel/advanced/cron-jobs/). cPanel mencatat Web Apps pada cPanel 138+, namun fitur dan versi runtime tetap harus dikonfirmasi pada account; dokumentasi tersebut bukan jaminan bahwa paket akun LAOS menyediakannya.
 
 ## 3. Tahapan rollout dan data awal
 
@@ -189,4 +190,4 @@ Dalam review berkala, evaluasi agregat (tanpa identitas siswa) seperti jumlah ak
 
 **Yang tersedia:** readiness command tanpa side effect, CI/release gates, health endpoints, bootstrap Admin Sistem sekali jalan, audit/scope akun, pencabutan token saat akun dinonaktifkan, queue/scheduler untuk ekspor, serta runbook rollout dan operasi.
 
-**Belum dikerjakan/dibuktikan:** provisioning akun/server WHM cPanel, kompatibilitas PHP/Node/worker/cron pada plan, pemilihan domain/subdomain dan region data, deployment hosted, backup job dan restore pada provider, monitoring/alert aktif, uji beban produksi-like, pelatihan, support desk, persetujuan legal/pemilik data, target SLA/RPO/RTO, dan rollout pilot. Fase 9 belum dapat dinyatakan selesai tanpa pemilik dan bukti untuk item tersebut.
+**Belum dikerjakan/dibuktikan:** provisioning account/server WHM cPanel, job Node 22 CI, fitur worker/cron pada plan, pemilihan domain/subdomain dan region data, deployment hosted, backup job dan restore pada provider, monitoring/alert aktif, uji beban produksi-like, pelatihan, support desk, persetujuan legal/pemilik data, target SLA/RPO/RTO, dan rollout pilot. Fase 9 belum dapat dinyatakan selesai tanpa pemilik dan bukti untuk item tersebut.

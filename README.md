@@ -13,7 +13,7 @@ Mobile Flutter Fase 7 menyediakan login siswa, sesi/token aman, verifikasi tauta
 
 Fase 8 menyediakan regression/security tests otomatis dan runbook QA/UAT/pilot. Uji lapangan, beban produksi, dan pemulihan backup perlu dijalankan serta ditandatangani pemilik lingkungan sebelum keputusan go-live. Lihat [Runbook QA dan Pilot Fase 8](./docs/qa-pilot-fase-8.md).
 
-Fase 9 menyediakan perintah pemeriksaan konfigurasi produksi Laravel, prosedur rollout bertahap, pengelolaan akun/operator, monitoring, backup/restore, insiden, dan rollback. Target awal WHM cPanel; akun/versi server, domain, SLA, retensi, serta RPO/RTO belum ditetapkan sehingga deployment produksi belum dilakukan. Lihat [Runbook Operasi Produksi Fase 9](./docs/operasi-produksi-fase-9.md).
+Fase 9 menyediakan perintah pemeriksaan konfigurasi produksi Laravel, prosedur rollout bertahap, pengelolaan akun/operator, monitoring, backup/restore, insiden, dan rollback. Target WHM cPanel 138.0.19 dengan PHP 8.4, MySQL 8.*, dan Node.js 22 telah dipilih; domain, region, worker queue, SLA, retensi, serta RPO/RTO belum ditetapkan sehingga deployment produksi belum dilakukan. Lihat [Runbook Operasi Produksi Fase 9](./docs/operasi-produksi-fase-9.md).
 
 ## Prasyarat
 
